@@ -1,82 +1,78 @@
-/**
- * MOTOR PRINCIPAL DO JOGO
- * Gerencia o Loop, a Tela e as Instâncias
- */
-
+// 1. Seleção do Canvas
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// 1. CONFIGURAÇÃO DE TELA (Responsivo)
+/**
+ * 2. FUNÇÃO DE REDIMENSIONAMENTO (RESIZE)
+ * Esta função ajusta o jogo para o tamanho da aba do navegador.
+ */
 function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     
-    // Só atualiza a câmera se ela já tiver sido criada lá embaixo
+    // A CORREÇÃO ESTÁ AQUI: 
+    // Só tentamos atualizar a câmera se ela já foi criada (não é undefined)
     if (typeof camera !== 'undefined' && camera !== null) {
         camera.width = canvas.width;
         camera.height = canvas.height;
     }
 }
 
-// Executa o resize imediatamente e sempre que a janela mudar
-resize();
-window.addEventListener('resize', resize);
-
-// 2. INICIALIZAÇÃO DOS MÓDULOS
-// Criamos o mundo primeiro para saber o tamanho total
+// 3. INICIALIZAÇÃO DAS VARIÁVEIS
+// Criamos o mundo primeiro
 const world = new World();
 
-// Criamos a câmera com o tamanho atual da tela
-const camera = new Camera(canvas.width, canvas.height);
+// Criamos a câmera (Agora ela existe oficialmente)
+const camera = new Camera(window.innerWidth, window.innerHeight);
 
-// Criamos o jogador no centro do mapa (2500, 2500)
+// Criamos o jogador no centro do mapa
 const player = new Player(world.width / 2, world.height / 2);
 
+// Chamamos o resize uma vez para configurar o tamanho inicial do canvas
+resize();
+
+// Ouvinte de evento para quando o usuário esticar a janela
+window.addEventListener('resize', resize);
+
 /**
- * 3. FUNÇÃO DE ATUALIZAÇÃO (Lógica)
+ * 4. LÓGICA DO JOGO (UPDATE)
  */
 function update() {
-    // Move o jogador e checa se ele não saiu das bordas do mundo
     player.update(world);
-    
-    // Faz a câmera deslizar suavemente atrás do jogador
     camera.follow(player, world);
 }
 
 /**
- * 4. FUNÇÃO DE DESENHO (Visual)
+ * 5. DESENHO DO JOGO (DRAW)
  */
 function draw() {
-    // Limpa a tela para desenhar o novo frame
+    // Limpa o rastro do frame anterior
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Camada 1: O Chão e os objetos (Árvores, Caixas, Mato, Casas)
+    // Desenha o mapa e objetos
     world.draw(ctx, camera);
 
-    // Camada 2: O Jogador (Sempre desenhado por cima do chão)
+    // Desenha o herói por cima
     player.draw(ctx, camera);
 }
 
 /**
- * 5. LOOP INFINITO (Game Loop)
+ * 6. LOOP PRINCIPAL
  */
 function gameLoop() {
     update();
     draw();
-    
-    // Mantém o jogo rodando a 60 frames por segundo
     requestAnimationFrame(gameLoop);
 }
 
-// 6. CONTROLE DE TELA CHEIA (Fullscreen)
-// O navegador exige que o usuário clique na tela para liberar o Fullscreen
+// 7. MODO TELA CHEIA (OPCIONAL)
 canvas.addEventListener('click', () => {
     if (!document.fullscreenElement) {
         canvas.requestFullscreen().catch(err => {
-            console.warn(`Aviso: Não foi possível ativar tela cheia: ${err.message}`);
+            console.warn("Tela cheia não ativada: ", err.message);
         });
     }
 });
 
-// INICIALIZA O MOTOR DO JOGO
+// INICIA TUDO!
 gameLoop();
