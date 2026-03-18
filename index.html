@@ -2,15 +2,71 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>RPG 2D - Start</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RPG Mundo Aberto - Versão Pro</title>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Remove barras de rolagem */
+        }
+
+        canvas {
+            display: block;
+            background-color: #2d5a27;
+            image-rendering: pixelated; /* Pixels nítidos */
+            cursor: crosshair;
+        }
+
+        #ui-instrucoes {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 20px;
+            border-radius: 8px;
+            pointer-events: none;
+            text-align: center;
+            border: 1px solid #555;
+        }
+    </style>
 </head>
 <body>
+
+    <div id="ui-instrucoes">
+        Use <b>W A S D</b> ou <b>Setas</b> para Explorar<br>
+        <small>Clique na tela para Modo Tela Cheia</small>
+    </div>
+
     <canvas id="gameCanvas"></canvas>
 
     <script src="js/world.js"></script>
     <script src="js/camera.js"></script>
     <script src="js/player.js"></script>
     <script src="js/main.js"></script>
+
+    <script>
+        // Pequeno script de segurança caso algum arquivo falhe
+        window.onerror = function(msg, url, line) {
+            console.error("Erro no Jogo: " + msg + "\nArquivo: " + url + "\nLinha: " + line);
+            return false;
+        };
+    </script>
+
 </body>
 </html>
