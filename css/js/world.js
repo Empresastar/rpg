@@ -1,18 +1,18 @@
 class World {
     constructor() {
-        this.width = 2000;  // Largura total do mapa
-        this.height = 2000; // Altura total do mapa
+        this.width = 2000;
+        this.height = 2000;
         this.tileSize = 50;
     }
 
     draw(ctx, camera) {
-        // Desenha o gramado (fundo)
+        // Gramado principal
         ctx.fillStyle = "#3e8e41"; 
         ctx.fillRect(0 - camera.x, 0 - camera.y, this.width, this.height);
 
-        // Desenha uma grade para você perceber que o mundo está se movendo
-        ctx.strokeStyle = "#45a049";
-        ctx.lineWidth = 2;
+        // Desenha uma grade para referência de movimento
+        ctx.strokeStyle = "rgba(255,255,255,0.1)";
+        ctx.lineWidth = 1;
 
         for (let x = 0; x <= this.width; x += this.tileSize) {
             ctx.beginPath();
