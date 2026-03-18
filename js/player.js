@@ -1,44 +1,50 @@
 class Player {
     constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.size = 40; // Tamanho do personagem
-        this.speed = 5;  // Velocidade de caminhada
+        this.x = x; this.y = y;
+        this.size = 40;
+        this.speed = 5;
         this.keys = {};
-
-        // Detecta quando uma tecla é pressionada
-        window.addEventListener('keydown', e => {
-            this.keys[e.key.toLowerCase()] = true;
-        });
-
-        // Detecta quando a tecla é solta
-        window.addEventListener('keyup', e => {
-            this.keys[e.key.toLowerCase()] = false;
-        });
+        window.addEventListener('keydown', e => this.keys[e.key.toLowerCase()] = true);
+        window.addEventListener('keyup', e => this.keys[e.key.toLowerCase()] = false);
     }
 
     update(world) {
-        // Movimentação W, A, S, D ou Setas
-        if (this.keys['w'] || this.keys['arrowup']) this.y -= this.speed;
-        if (this.keys['s'] || this.keys['arrowdown']) this.y += this.speed;
-        if (this.keys['a'] || this.keys['arrowleft']) this.x -= this.speed;
-        if (this.keys['d'] || this.keys['arrowright']) this.x += this.speed;
-
-        // Impede o personagem de sair dos limites do mapa (Colisão com bordas)
-        if (this.x < 0) this.x = 0;
-        if (this.y < 0) this.y = 0;
-        if (this.x > world.width - this.size) this.x = world.width - this.size;
-        if (this.y > world.height - this.size) this.y = world.height - this.size;
+        if (this.keys['w']) this.y -= this.speed;
+        if (this.keys['s']) this.y += this.speed;
+        if (this.keys['a']) this.x -= this.speed;
+        if (this.keys['d']) this.x += this.speed;
+        
+        this.x = Math.max(0, Math.min(this.x, world.width - this.size));
+        this.y = Math.max(0, Math.min(this.y, world.height - this.size));
     }
 
     draw(ctx, camera) {
-        // Desenha o corpo do personagem (Subtraindo a posição da câmera)
-        ctx.fillStyle = "#3498db"; // Azul
-        ctx.fillRect(this.x - camera.x, this.y - camera.y, this.size, this.size);
-        
-        // Desenha os "olhos" para sabermos a direção
-        ctx.fillStyle = "white";
-        ctx.fillRect(this.x - camera.x + 8, this.y - camera.y + 10, 6, 6);
-        ctx.fillRect(this.x - camera.x + 26, this.y - camera.y + 10, 6, 6);
+        const dx = this.x - camera.x;
+        const dy = this.y - camera.y;
+
+        // 1. Sombra do jogador
+        ctx.fillStyle = "rgba(0,0,0,0.4)";
+        ctx.beginPath();
+        ctx.ellipse(dx + 20, dy + 45, 15, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 2. Corpo/Ombros
+        ctx.fillStyle = "#2980b9"; // Cor da roupa
+        ctx.beginPath();
+        ctx.ellipse(dx + 20, dy + 25, 20, 12, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 3. Cabeça
+        let skinGrad = ctx.createRadialGradient(dx+20, dy+15, 2, dx+20, dy+20, 15);
+        skinGrad.addColorStop(0, "#ffdbac"); // Topo da cabeça
+        skinGrad.addColorStop(1, "#e0ac69"); // Sombra do pescoço
+        ctx.fillStyle = skinGrad;
+        ctx.beginPath();
+        ctx.arc(dx + 20, dy + 20, 12, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 4. Mochila (Detalhe realista)
+        ctx.fillStyle = "#34495e";
+        ctx.fillRect(dx + 10, dy + 22, 20, 10);
     }
 }
