@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu RPG 2D - Mundo Aberto</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>RPG Mundo Aberto 2D</title>
     <style>
-        /* CSS embutido para garantir que funcione de primeira */
-        body { margin: 0; background: #1a1a1a; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        body { margin: 0; background: #1a1a1a; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: sans-serif; }
         canvas { border: 4px solid #fff; background: #3e8e41; image-rendering: pixelated; }
+        #ui { position: absolute; top: 10px; left: 10px; color: white; background: rgba(0,0,0,0.5); padding: 10px; pointer-events: none; }
     </style>
 </head>
 <body>
 
+    <div id="ui">Use WASD ou Setas para andar</div>
     <canvas id="gameCanvas"></canvas>
 
     <script src="js/world.js"></script>
