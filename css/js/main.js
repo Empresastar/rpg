@@ -1,33 +1,31 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Configuração de tamanho (Resolução interna)
 canvas.width = 800;
 canvas.height = 600;
 
-// Instanciar o jogador (vamos criar a classe abaixo)
-const player = new Player(canvas.width / 2, canvas.height / 2);
+// Instancia as classes
+const world = new World();
+const camera = new Camera(canvas.width, canvas.height);
+const player = new Player(world.width / 2, world.height / 2); // Começa no meio do mundo
 
 function update() {
     player.update();
+    camera.follow(player); // A câmera segue o jogador
 }
 
 function draw() {
-    // 1. Limpa o frame anterior
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 2. Desenha o fundo (Mundo)
-    // Aqui entrará a lógica de chunks no futuro
-
-    // 3. Desenha o jogador
-    player.draw(ctx);
+    // IMPORTANTE: O mundo e o player precisam saber a posição da câmera
+    world.draw(ctx, camera);
+    player.draw(ctx, camera);
 }
 
 function gameLoop() {
     update();
     draw();
-    requestAnimationFrame(gameLoop); // Mantém o jogo a 60 FPS
+    requestAnimationFrame(gameLoop);
 }
 
-// Inicia o jogo
 gameLoop();
