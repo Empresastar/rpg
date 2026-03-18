@@ -1,23 +1,30 @@
 class World {
     constructor() {
-        this.width = 2000;  // Mundo muito maior que a tela
-        this.height = 2000;
-        this.tileSize = 40; // Tamanho de cada bloco de chão
+        this.width = 2000;  // Largura total do mapa
+        this.height = 2000; // Altura total do mapa
+        this.tileSize = 50;
     }
 
     draw(ctx, camera) {
-        ctx.fillStyle = "#2d5a27"; // Verde escuro para o chão
-        // Desenha o limite do mundo
+        // Desenha o gramado (fundo)
+        ctx.fillStyle = "#3e8e41"; 
         ctx.fillRect(0 - camera.x, 0 - camera.y, this.width, this.height);
 
-        // Desenha algumas "marcações" (ex: árvores/pedras abstratas) 
-        // para você perceber o movimento
-        ctx.fillStyle = "#5d4037";
-        for(let i = 0; i < 50; i++) {
-            // Exemplo de posições fixas baseadas em um cálculo simples
-            let x = (i * 150) % this.width;
-            let y = (i * 200) % this.height;
-            ctx.fillRect(x - camera.x, y - camera.y, 20, 20);
+        // Desenha uma grade para você perceber que o mundo está se movendo
+        ctx.strokeStyle = "#45a049";
+        ctx.lineWidth = 2;
+
+        for (let x = 0; x <= this.width; x += this.tileSize) {
+            ctx.beginPath();
+            ctx.moveTo(x - camera.x, 0 - camera.y);
+            ctx.lineTo(x - camera.x, this.height - camera.y);
+            ctx.stroke();
+        }
+        for (let y = 0; y <= this.height; y += this.tileSize) {
+            ctx.beginPath();
+            ctx.moveTo(0 - camera.x, y - camera.y);
+            ctx.lineTo(this.width - camera.x, y - camera.y);
+            ctx.stroke();
         }
     }
 }
