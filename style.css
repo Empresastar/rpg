@@ -1,1 +1,15 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
 
+canvas {
+    border: 2px solid #fff;
+    background-color: #2d5a27; /* Cor de grama provisória */
+}
