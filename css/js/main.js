@@ -1,23 +1,25 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+// Ajuste de tela
 canvas.width = 800;
 canvas.height = 600;
 
-// Instancia as classes
+// Inicialização
 const world = new World();
 const camera = new Camera(canvas.width, canvas.height);
-const player = new Player(world.width / 2, world.height / 2); // Começa no meio do mundo
+const player = new Player(world.width / 2, world.height / 2);
 
 function update() {
-    player.update();
-    camera.follow(player); // A câmera segue o jogador
+    player.update(world);
+    camera.follow(player, world);
 }
 
 function draw() {
+    // Limpar tela
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // IMPORTANTE: O mundo e o player precisam saber a posição da câmera
+    // Desenhar camadas
     world.draw(ctx, camera);
     player.draw(ctx, camera);
 }
@@ -28,4 +30,5 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
+// Rodar o jogo
 gameLoop();
