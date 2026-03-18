@@ -1,7 +1,8 @@
 class Player {
     constructor(x, y) {
-        this.x = x; this.y = y;
-        this.size = 40;
+        this.x = x;
+        this.y = y;
+        this.size = 30;
         this.speed = 5;
         this.keys = {};
         window.addEventListener('keydown', e => this.keys[e.key.toLowerCase()] = true);
@@ -9,11 +10,34 @@ class Player {
     }
 
     update(world) {
-        if (this.keys['w']) this.y -= this.speed;
-        if (this.keys['s']) this.y += this.speed;
-        if (this.keys['a']) this.x -= this.speed;
-        if (this.keys['d']) this.x += this.speed;
-        
+        let nextX = this.x;
+        let nextY = this.y;
+
+        if (this.keys['w']) nextY -= this.speed;
+        if (this.keys['s']) nextY += this.speed;
+        if (this.keys['a']) nextX -= this.speed;
+        if (this.keys['d']) nextX += this.speed;
+
+        // SISTEMA DE COLISÃO
+        // Verifica se a próxima posição vai bater em algum objeto do mundo
+        let canMove = !world.objects.some(obj => {
+            // Só checa colisão com Árvores e Caixas (Arbusto você pode atravessar)
+            if (obj.type === 'bush') return false;
+
+            let dx = (nextX + this.size/2) - obj.x;
+            let dy = (nextY + this.size/2) - obj.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // Se a distância for menor que o tamanho dos dois somados, houve colisão
+            return distance < (this.size/2 + obj.size * 0.4);
+        });
+
+        if (canMove) {
+            this.x = nextX;
+            this.y = nextY;
+        }
+
+        // Bordas do mundo
         this.x = Math.max(0, Math.min(this.x, world.width - this.size));
         this.y = Math.max(0, Math.min(this.y, world.height - this.size));
     }
@@ -22,29 +46,21 @@ class Player {
         const dx = this.x - camera.x;
         const dy = this.y - camera.y;
 
-        // 1. Sombra do jogador
-        ctx.fillStyle = "rgba(0,0,0,0.4)";
+        // Sombra
+        ctx.fillStyle = "rgba(0,0,0,0.3)";
         ctx.beginPath();
-        ctx.ellipse(dx + 20, dy + 45, 15, 8, 0, 0, Math.PI * 2);
+        ctx.arc(dx + 15, dy + 35, 12, 0, Math.PI * 2);
         ctx.fill();
 
-        // 2. Corpo/Ombros
-        ctx.fillStyle = "#2980b9"; // Cor da roupa
+        // Player (Visão de cima)
+        ctx.fillStyle = "#2980b9";
         ctx.beginPath();
-        ctx.ellipse(dx + 20, dy + 25, 20, 12, 0, 0, Math.PI * 2);
+        ctx.ellipse(dx + 15, dy + 15, 18, 10, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // 3. Cabeça
-        let skinGrad = ctx.createRadialGradient(dx+20, dy+15, 2, dx+20, dy+20, 15);
-        skinGrad.addColorStop(0, "#ffdbac"); // Topo da cabeça
-        skinGrad.addColorStop(1, "#e0ac69"); // Sombra do pescoço
-        ctx.fillStyle = skinGrad;
+        ctx.fillStyle = "#ffdbac";
         ctx.beginPath();
-        ctx.arc(dx + 20, dy + 20, 12, 0, Math.PI * 2);
+        ctx.arc(dx + 15, dy + 10, 10, 0, Math.PI * 2);
         ctx.fill();
-
-        // 4. Mochila (Detalhe realista)
-        ctx.fillStyle = "#34495e";
-        ctx.fillRect(dx + 10, dy + 22, 20, 10);
     }
 }
