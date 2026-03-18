@@ -7,11 +7,11 @@ class Camera {
     }
 
     follow(target, world) {
-        // Centraliza a câmera no alvo (player)
+        // Centraliza a câmera no jogador
         this.x = target.x + target.size / 2 - this.width / 2;
         this.y = target.y + target.size / 2 - this.height / 2;
 
-        // Impede a câmera de sair dos limites do mundo (opcional)
+        // Limites da câmera (não mostrar o "vazio" fora do mapa)
         if (this.x < 0) this.x = 0;
         if (this.y < 0) this.y = 0;
         if (this.x > world.width - this.width) this.x = world.width - this.width;
